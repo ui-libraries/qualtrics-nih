@@ -104,3 +104,8 @@ body {
 .source {
     display: none;
 }
+
+#reminder {
+    padding: 3px;
+    color: red;
+}

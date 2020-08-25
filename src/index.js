@@ -1,14 +1,13 @@
-import adapter from 'webrtc-adapter'
 import QBMediaRecorder from 'media-recorder-js'
 import AWS from 'aws-sdk'
-import { s3 } from './config'
+
 
 let rec;
 // https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/s3-example-photo-album.html
 
-var bucketName = "survey-webcam";
+var bucketName = "arobotherapy";
 var bucketRegion = "us-east-1";
-var IdentityPoolId = "us-east-1:f7603a39-0ba9-4523-96dd-fe81991e80f3";
+var IdentityPoolId = "us-east-1:e0392149-4545-4145-8f91-1e5630a94b08";
 
 AWS.config.update({
   region: bucketRegion,
@@ -43,6 +42,7 @@ var notify = {
         }, 5000);
     }
 };
+
 
 var resultCard = {
     blob: null, // saved a blob after stopped a record
@@ -87,6 +87,7 @@ var resultCard = {
         });
     }
 };
+
 
 var inputCard = {
     audioRecorderWorkerPath: '../node_modules/media-recorder-js/src/qbAudioRecorderWorker.js',
@@ -269,10 +270,7 @@ var inputCard = {
     },
     _stopStreaming: function() {
         this.stream.getTracks().forEach(function(track) {
-            console.log("stopping")
-            console.log(track)
             track.stop();
-            track.enabled = false
         });
     },
     _setupListeners: function() {
@@ -383,7 +381,8 @@ inputCard.init()
 
 function initRecorder() {
     var opts = {
-        onstop: function onStoppedRecording(blob) {
+        onstop: function onStoppedRecording(blob) {            
+            videoSize(blob.size)
             resultCard.blob = blob;
             resultCard.attachVideo(blob);
         },
@@ -415,31 +414,48 @@ function initRecorder() {
 
     inputCard.ui.wrap.addEventListener('stopped', function() {
         rec.stop();
-        //resultCard.toggleBtn(false);
+        resultCard.toggleBtn(false);
         document.getElementById("record-title").innerHTML = `Press Start to begin recording.`
         document.getElementById("upload-button").style.display = "block"
         document.getElementById("reminder").style.display = "inline"
-        inputCard._stopStreaming()
-        resultCard.detachVideo()
-        console.log("hey there")
+        
     }, false);
 
     resultCard.ui.wrap.addEventListener('download', function() {
         //rec.download(null, resultCard.blob);
         let res = window.localStorage.getItem('response');
         let q = window.localStorage.getItem('survey');
-        let videoStatus = window.localStorage.getItem('videoStatus');
         let key = res + '_' + q + '.webm'
         let bucket = new AWS.S3({params: {Bucket: bucketName}});
         let params = {Key: key, ContentType: 'video/webm', Body: resultCard.blob};
         bucket.upload(params, function (err, data) {
             if (err) {
                 document.getElementById("record-title").innerHTML = `<span style="font-size: 18px; color: red;"> Error uploading</span>`
+                console.log(err)
             } else {
                 document.getElementById("record-title").innerHTML = `<span style="font-size: 18px; color: red;"> Successfully uploaded</span>`
             }
             console.log(err ? 'ERROR!' : 'UPLOADED.');
         });
-        
     }, false);
+}
+
+function videoSize(len) {
+    let size = window.localStorage.getItem('videoLength')
+
+    if (size == null) {
+        size = 0
+    } else {
+        size = parseInt(size)
+    }
+
+    let newSize = size + len
+    window.localStorage.setItem('videoLength', newSize)
+
+    // 5 minutes is a blob size of 114082181
+    if (newSize >= 114082181) {
+        window.localStorage.setItem('maxVideoTime', "true")
+    }
+
+
 }
