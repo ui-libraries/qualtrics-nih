@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Video Survey</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="icon" href="https://docsdev.quickblox.com/themes/quickblox/templates/main_resources/favicon.ico">
+
+    <link rel="stylesheet" href="css/spectre.min.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div class="content">
+        <main>
+            <div class="columns wrap">
+                <div class="column col-12 col-xs-12">
+                    <div class="card j-card">
+                        <div class="card-image">
+                            <div class="video-responsive">
+                                <video class=" j-video_local video" controls muted></video>
+                            </div>
+                        </div>
+                        
+                        <div class="source">
+                            <div class="form-group">
+                                <select id="j-audioSource" class="invisible form-select select-sm">
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <select id="j-videoSource" class="invisible form-select select-sm">
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <select id="j-mimeTypes" class="invisible form-select select-sm">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <h5 id="record-title" class="card-title">Press Start to begin recording.</h5>
+                            <div id="record-button-block" class="btn-group btn-group-block">
+                                <button class="btn j-start">Start</button>
+                                <button class="btn j-pause" disabled>Pause</button>
+                                <button class="btn j-resume" disabled>Resume</button>
+                                <button class="btn j-stop" disabled>Stop</button>
+                                <span id="upload-button" class="btn j-download" style="font-size: 24px;"><i class="fas fa-cloud-upload-alt"></i></span>
+                                <!-- <button class="btn j-download" disabled>Upload</button> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- -->
+                <div class="column col-6 col-xs-12 gone">
+                    <div id="result-card" class="card j-result-card">
+                        <div class="card-footer">
+                            <div class="btn-group btn-group-block">
+                                <button class="btn j-clear" disabled>Clear</button>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="j-notify notify toast toast-danger"></div>
+    <script src="https://kit.fontawesome.com/15d07c474c.js" crossorigin="anonymous"></script>
+    <script src="js/bundle.js"></script>
+</body>
+</html>
