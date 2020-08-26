@@ -1,8 +1,8 @@
 import QBMediaRecorder from 'media-recorder-js'
 import AWS from 'aws-sdk'
 
-
-let rec;
+let rec
+let startTime = 0, stopTime = 0
 // https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/s3-example-photo-album.html
 
 var bucketName = "arobotherapy";
@@ -381,10 +381,12 @@ inputCard.init()
 
 function initRecorder() {
     var opts = {
-        onstop: function onStoppedRecording(blob) {            
-            videoSize(blob.size)
+        onstop: function onStoppedRecording(blob) {
+            let duration = (stopTime - startTime) / 1000
+            videoSize(duration)
             resultCard.blob = blob;
-            resultCard.attachVideo(blob);
+            //there is no result card now
+            //resultCard.attachVideo(blob);
         },
         workerPath: inputCard.audioRecorderWorkerPath
     };
@@ -394,6 +396,7 @@ function initRecorder() {
     resultCard.setupListeners();
 
     inputCard.ui.wrap.addEventListener('started', function() {
+        startTime = Date.now()
         rec.start(inputCard.stream);
         document.getElementById("record-title").innerHTML = `<span style="font-size: 18px; color: red;"><i class="fas fa-circle"></i> Now recording</span>`;
     }, false);
@@ -413,6 +416,7 @@ function initRecorder() {
     }, false);
 
     inputCard.ui.wrap.addEventListener('stopped', function() {
+        stopTime = Date.now()
         rec.stop();
         resultCard.toggleBtn(false);
         document.getElementById("record-title").innerHTML = `Press Start to begin recording.`
@@ -440,7 +444,7 @@ function initRecorder() {
     }, false);
 }
 
-function videoSize(len) {
+function videoSize(duration) {
     let size = window.localStorage.getItem('videoLength')
 
     if (size == null) {
@@ -449,13 +453,10 @@ function videoSize(len) {
         size = parseInt(size)
     }
 
-    let newSize = size + len
+    let newSize = size + duration
     window.localStorage.setItem('videoLength', newSize)
 
-    // 5 minutes is a blob size of 114082181
-    if (newSize >= 114082181) {
+    if (newSize >= 300) {
         window.localStorage.setItem('maxVideoTime', "true")
     }
-
-
 }
