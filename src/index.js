@@ -5,25 +5,35 @@ let rec
 let startTime = 0, stopTime = 0
 // https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/s3-example-photo-album.html
 
+/*
+var bucketName = "survey-webcam";
+var bucketRegion = "us-east-1";
+var IdentityPoolId = "us-east-1:f7603a39-0ba9-4523-96dd-fe81991e80f3";
+*/
+
+
+
 var bucketName = "arobotherapy";
 var bucketRegion = "us-east-1";
-var IdentityPoolId = "us-east-1:e0392149-4545-4145-8f91-1e5630a94b08";
+AWS.config.region = 'us-east-1';
+var IdentityPoolId = 'us-east-1:af2db267-d367-4bce-9b0a-05862a21d943';
+
 
 AWS.config.update({
-  region: bucketRegion,
-  credentials: new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: IdentityPoolId
-  })
-});
+    region: bucketRegion,
+    credentials: new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: IdentityPoolId
+    })
+  });
 
+  document.getElementById("upload-button").style.display = "none"
+  document.getElementById("reminder").style.display = "none"
 /*
-AWS.config.region = 'us-east-1'; // Region
-AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: 'us-east-1:af2db267-d367-4bce-9b0a-05862a21d943',
-});
-*/
-document.getElementById("upload-button").style.display = "none"
-document.getElementById("reminder").style.display = "none"
+if (document.getElementById("upload-button") && document.getElementById("reminder")) {
+    document.getElementById("upload-button").style.display = "none"
+    document.getElementById("reminder").style.display = "none"
+}*/
+
 
 
 var notify = {
@@ -403,10 +413,12 @@ function initRecorder() {
 
     inputCard.ui.wrap.addEventListener('paused', function() {
         rec.pause();
+        document.getElementById("record-title").innerHTML = `<span style="font-size: 18px; color: red;"><i class="fas fa-pause"></i> Paused</span>`;
     }, false);
 
     inputCard.ui.wrap.addEventListener('resumed', function() {
         rec.resume();
+        document.getElementById("record-title").innerHTML = `<span style="font-size: 18px; color: red;"><i class="fas fa-circle"></i> Now recording</span>`;
     }, false);
 
     inputCard.ui.wrap.addEventListener('changed', function() {
@@ -415,14 +427,24 @@ function initRecorder() {
         }
     }, false);
 
-    inputCard.ui.wrap.addEventListener('stopped', function() {
+    inputCard.ui.wrap.addEventListener('stopped', function(data) {
         stopTime = Date.now()
         rec.stop();
+        let stopWebcam = window.localStorage.getItem('stop-webcam')
         resultCard.toggleBtn(false);
+        let recordTitle = document.getElementById("record-title")
+        let uploadButton = document.getElementById("upload-button")
         document.getElementById("record-title").innerHTML = `Press Start to begin recording.`
         document.getElementById("upload-button").style.display = "block"
-        document.getElementById("reminder").style.display = "inline"
-        
+        document.getElementById("reminder").style.display = "block"
+        let video = document.getElementsByClassName("video")[0]
+            var stream = video.srcObject;
+            var tracks = stream.getTracks();
+    
+            for (var i = 0; i < tracks.length; i++) {
+            var track = tracks[i];
+            track.stop();
+            }        
     }, false);
 
     resultCard.ui.wrap.addEventListener('download', function() {
@@ -460,3 +482,23 @@ function videoSize(duration) {
         window.localStorage.setItem('maxVideoTime', "true")
     }
 }
+
+document.getElementById('photoupload').onchange = function(e) {
+    console.log('adding')
+    var files = document.getElementById("photoupload").files;
+    if (!files.length) {
+    return alert("Please choose a file to upload first.");
+    }
+    let res = window.localStorage.getItem('response');
+    let q = window.localStorage.getItem('survey');
+    let key = res + '_' + q
+    var file = files[0];
+    var fileName = file.name;
+    fileName = key + "_" + fileName
+    var photoKey = fileName;
+    var bucket = new AWS.S3({params: {Bucket: bucketName}});
+    var params = {Key: fileName, ContentType: file.type, Body: file};
+    bucket.upload(params, function (err, data) {
+        document.getElementById("upload_button_text").innerHTML = 'UPLOADED.'
+    });
+};

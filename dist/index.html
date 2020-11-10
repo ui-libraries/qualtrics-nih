@@ -15,62 +15,63 @@
 <body>
     <div class="content">
         <main>
-            <div class="columns wrap">
-                <div class="column col-12 col-xs-12">
-                    <div class="card j-card">
-                        <div class="card-image">
-                            <div class="video-responsive">
-                                <video class=" j-video_local video" muted></video>
-                            </div>
-                        </div>
-                        
-                        <div class="source">
-                            <div class="form-group">
-                                <select id="j-audioSource" class="invisible form-select select-sm">
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <select id="j-videoSource" class="invisible form-select select-sm">
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <select id="j-mimeTypes" class="invisible form-select select-sm">
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="card-footer">
-                            <h5 id="record-title" class="card-title">Press Start to begin recording.</h5>
-                            <div id="record-button-block" class="btn-group btn-group-block">
-                                <button class="btn j-start">Start</button>
-                                <button class="btn j-pause" disabled>Pause</button>
-                                <button class="btn j-resume" disabled>Resume</button>
-                                <button class="btn j-stop" disabled>Stop</button>
-                                <span id="upload-button" class="btn j-download" style="font-size: 24px;"><i class="fas fa-cloud-upload-alt"></i></span>
-                                <span id="reminder"><-- Don't forget to hit upload!</span>
-                                <!-- <button class="btn j-download" disabled>Upload</button> -->
-                            </div>
-                        </div>
+           <div class="columns wrap">
+              <div class="column col-12 col-xs-12">
+                 <div class="card j-card">
+                    <div class="card-image">
+                       <div class="video-responsive">
+                          <video class=" j-video_local video" muted></video>
+                       </div>
                     </div>
-                </div>
-                <!-- -->
-                <div class="column col-6 col-xs-12 gone">
-                    <div id="result-card" class="card j-result-card">
-                        <div class="card-footer">
-                            <div class="btn-group btn-group-block">
-                                <button class="btn j-clear" disabled>Clear</button>                                
-                            </div>
-                        </div>
+                    <div class="source">
+                       <div class="form-group">
+                          <select id="j-audioSource" class="invisible form-select select-sm">
+                          </select>
+                       </div>
+                       <div class="form-group">
+                          <select id="j-videoSource" class="invisible form-select select-sm">
+                          </select>
+                       </div>
+                       <div class="form-group">
+                          <select id="j-mimeTypes" class="invisible form-select select-sm">
+                          </select>
+                       </div>
                     </div>
-                </div>
-            </div>
+                    <div class="card-footer">
+                       <h5 id="record-title" class="card-title">Press Start to begin recording or choose a file to upload.</h5>
+                                 <form action='' method='POST' enctype='multipart/form-data'>
+                                     <input type='file' name='photoupload' id="photoupload">
+                                     <div id="upload_button_text"></div>
+                                 </form>
+                       <div id="record-button-block" class="btn-group btn-group-block">
+                          <button class="btn j-start">Start</button>
+                          <button class="btn j-pause" disabled>Pause</button>
+                          <button class="btn j-resume" disabled>Resume</button>
+                          <button class="btn j-stop" disabled>Stop</button>
+                          <span id="upload-button" class="btn j-download" style="font-size: 24px;"><i class="fas fa-cloud-upload-alt"></i></span>
+                          <span id="reminder"><-- Don't forget to hit upload!</span>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+              <div class="column col-6 col-xs-12 gone">
+                 <div id="result-card" class="card j-result-card">
+                    <div class="card-footer">
+                       <div class="btn-group btn-group-block">
+                          <button class="btn j-clear" disabled>Clear</button>                                
+                       </div>
+                    </div>
+                 </div>
+              </div>
+           </div>
         </main>
-    </div>
+     </div>
 
     <div class="j-notify notify toast toast-danger"></div>
     <script src="https://kit.fontawesome.com/15d07c474c.js" crossorigin="anonymous"></script>
     <script src="js/bundle.js"></script>
+    <script>
+        
+    </script>
 </body>
 </html>
